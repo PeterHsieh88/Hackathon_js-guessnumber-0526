@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bootstrap</title>
+    <!-- bootstrap@5.3.8 css -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <!-- bootstrap-icons@1.13.1 -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    />
+  </head>
+  <body>
+    <!-- 樣式區 -->
+
+    <!-- 開始區域 -->
+    <div class="container vh-100 d-flex flex-column justify-content-center">
+      <div
+        class="btn-group w-100"
+        role="group"
+        aria-label="Basic outlined example"
+      >
+        <button type="button" class="btn btn-outline-primary start-btn">
+          開始
+        </button>
+        <button type="button" class="btn btn-outline-primary restart-btn">
+          放棄重來
+        </button>
+        <button type="button" class="btn btn-outline-primary answer-btn">
+          看答案
+        </button>
+      </div>
+
+      <!-- 顯示區域 -->
+
+      <div class="result-area">
+        <div class="d-flex flex-row input">
+          <ul class="list"></ul>
+          <div></div>
+        </div>
+      </div>
+
+      <!-- 輸入區域 -->
+      <div class="input-group mb-3">
+        <div class="input-group-text">猜答案</div>
+        <input
+          type="text"
+          class="form-control guess-input"
+          placeholder="請輸入答案"
+          aria-label="Recipient’s username"
+          aria-describedby="button-addon2"
+        />
+        <button
+          class="btn btn-outline-secondary guess-btn"
+          type="button"
+          id="button-addon2"
+        >
+          猜!!
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // --- DOM區 ---
+      const startBtn = document.querySelector(".start-btn");
+      const restartBtn = document.querySelector(".restart-btn");
+      const answerBtn = document.querySelector(".answer-btn");
+      const guessBtn = document.querySelector(".guess-btn");
+      const resultArea = document.querySelector(".result-area");
+      const guessInput = document.querySelector(".guess-input");
+      const listItems = document.querySelector(".list");
+      const input = document.querySelector(".input");
+      startBtn.addEventListener("click", getAnswer);
+      guessBtn.addEventListener("click", guessAnswer);
+      restartBtn.addEventListener("click", restartArea);
+      answerBtn.addEventListener("click", answerArea);
+
+      // --- 程式碼區 ---
+      // 1. 讓電腦產生四位數且不重複的亂數
+      const answer = [];
+      function getRandomIntInclusive(min, max) {
+        const minCeiled = Math.ceil(min);
+        const maxFloored = Math.floor(max);
+        return Math.floor(
+          Math.random() * (maxFloored - minCeiled + 1) + minCeiled,
+        ); // 最大值和最小值都包含
+      }
+      function getAnswer() {
+        answer.length = 0;
+        for (let i = 0; i < 4; i++) {
+          let num = getRandomIntInclusive(0, 9);
+          while (answer.includes(num)) {
+            num = getRandomIntInclusive(0, 9);
+          }
+          answer.push(num);
+        }
+        console.log(answer);
+      }
+
+      // 2. 猜答案
+      let a = 0;
+      let b = 0;
+      let count = 0;
+      function guessAnswer() {
+        a = 0;
+        b = 0;
+        for (let i = 0; i < 4; i++) {
+          // console.log(
+          //   `第${i}位：猜 ${parseInt(guessInput.value[i])}，答案 ${answer[i]}`,
+          // );
+          if (parseInt(guessInput.value[i]) === answer[i]) {
+            a++;
+          }
+        }
+        for (let i = 0; i < 4; i++) {
+          if (
+            parseInt(guessInput.value[i]) !== answer[i] &&
+            answer.includes(parseInt(guessInput.value[i]))
+          ) {
+            b++;
+          }
+        }
+        const inputArea = document.createElement("div");
+        inputArea.classList.add("d-flex");
+
+        const resItem = document.createElement("span");
+        resItem.textContent = `${a}A${b}B `; // 填入內容
+        const guessItem = document.createElement("span");
+        guessItem.textContent = guessInput.value;
+        resItem.append(guessItem); // 貼到清單上
+        inputArea.append(resItem);
+        resultArea.append(inputArea);
+      }
+
+      // 3. 重新開始
+      function restartArea() {
+        listItems.innerHTML = ""; // ← 一行清空所有 <li>
+        getAnswer(); // 順便產生新答案
+      }
+
+      // 4.看答案
+      function answerArea() {
+        alert(`答案是 ${answer}`);
+      }
+    </script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
